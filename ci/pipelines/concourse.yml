@@ -175,9 +175,13 @@ jobs:
     params: {bump: final}
     trigger: true
   - task: create-candidate-release
+    input_mapping:
+      candidate-release: concourse-candidate-release
+    output_mapping:
+      candidate-release: concourse-candidate-release
     file: concourse/ci/create-candidate-release.yml
-  - put: candidate-release
-    params: {file: candidate-release/concourse-*.tgz}
+  - put: concourse-candidate-release
+    params: {file: concourse-candidate-release/concourse-*.tgz}
 
 - name: bin-rc
   public: true
@@ -264,7 +268,7 @@ jobs:
       - get: concourse
         passed: [bosh-rc]
         trigger: true
-      - get: candidate-release
+      - get: concourse-candidate-release
         passed: [bosh-rc]
         trigger: true
       - get: version
@@ -283,7 +287,7 @@ jobs:
         stemcells: [lite-stemcell/*.tgz]
         releases:
           - garden-linux-release/*.tgz
-          - candidate-release/concourse-*.tgz
+          - concourse-candidate-release/concourse-*.tgz
     - task: no-auth-build
       file: concourse/ci/testflight.yml
       config: {params: {ATC_URL: "http://10.244.15.2:8080"}}
@@ -378,7 +382,7 @@ jobs:
     - get: version
       passed: [testflight, bin-testflight]
       trigger: true
-    - get: candidate-release
+    - get: concourse-candidate-release
       passed: [testflight]
       trigger: true
     - get: garden-linux-release
@@ -399,7 +403,7 @@ jobs:
       stemcells: [bosh-stemcell/*.tgz]
       releases:
         - garden-linux-release/*.tgz
-        - candidate-release/concourse-*.tgz
+        - concourse-candidate-release/concourse-*.tgz
   - task: emit-yeller-deploy
     file: concourse/ci/emit-yeller-deploy.yml
     config:
@@ -423,7 +427,7 @@ jobs:
     - get: concourse
       passed: [deploy]
       params: {submodules: none}
-    - get: candidate-release
+    - get: concourse-candidate-release
       passed: [deploy]
     - get: version
       passed: [deploy]
@@ -435,6 +439,8 @@ jobs:
       passed: [deploy]
     - get: deployments
   - task: finalize-release
+    input_mapping:
+      candidate-release: concourse-candidate-release
     file: concourse/ci/finalize-release.yml
   - aggregate:
     - put: version
@@ -736,7 +742,7 @@ resources:
     access_key_id: {{pipeline-bucket-access-key}}
     secret_access_key: {{pipeline-bucket-secret-key}}
 
-- name: candidate-release
+- name: concourse-candidate-release
   type: s3
   source:
     bucket: concourse-release-candidates
