@@ -2,6 +2,7 @@
 name: fly
 
 dependencies:
+  - concourse_version
   - golang
 
 files:
@@ -16,6 +17,7 @@ files:
   - github.com/concourse/fly/commands/internal/executehelpers/*.go # gosub
   - github.com/concourse/fly/commands/internal/flaghelpers/*.go # gosub
   - github.com/concourse/fly/commands/internal/hijacker/*.go # gosub
+  - github.com/concourse/fly/commands/internal/hijackhelpers/*.go # gosub
   - github.com/concourse/fly/commands/internal/setpipelinehelpers/*.go # gosub
   - github.com/concourse/fly/config/*.go # gosub
   - github.com/concourse/fly/eventstream/*.go # gosub
@@ -23,6 +25,7 @@ files:
   - github.com/concourse/fly/rc/*.go # gosub
   - github.com/concourse/fly/template/*.go # gosub
   - github.com/concourse/fly/ui/*.go # gosub
+  - github.com/concourse/fly/version/*.go # gosub
   - github.com/concourse/go-concourse/concourse/*.go # gosub
   - github.com/concourse/go-concourse/concourse/eventstream/*.go # gosub
   - github.com/concourse/go-concourse/concourse/internal/*.go # gosub
